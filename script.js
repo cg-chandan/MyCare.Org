@@ -37,7 +37,8 @@
 //     })
 // });
 const search = document.getElementById('search');
-
+if(search){
+    
 search.addEventListener("click", () =>{
     fetch('hospitals.json').then(data => data.json()).then(data =>{
         const pincode =document.getElementById('pincode');
@@ -47,34 +48,34 @@ search.addEventListener("click", () =>{
             return ele.pincode == parseInt(pincode.value)
         })
         hospitallist.innerHTML = "";
-console.log(pcode);
-        pcode.forEach(e => {
-            if(e.pincode == parseInt(pincode.value)){
-                return hospitallist.innerHTML += `
-                <tr>
-                <td>${e.name}</td>
-                <td>${e.address}</td>
-                <td>${e.phonenumber}</td>
-                </tr>`
-            }
-            else {
-                console.log('error');
-                // hospitallist.innerHTML = `<tr>
-                // <td>No Hospitals found in this pincode</td>
-                // </tr>`;
-            }
-        })
+
+
+        if(pcode.length >0){
+            pcode.forEach(e => {
+                if(e.pincode == parseInt(pincode.value)){
+                    return hospitallist.innerHTML += `
+                    <tr>
+                    <td>${e.name}</td>
+                    <td>${e.address}</td>
+                    <td>${e.phonenumber}</td>
+                    </tr>`
+                }
+            })
     
+        }
+        else {
+            hospitallist.innerHTML = `<tr>
+                    <td>Invalid pincode</td>
+                    </tr>`;
+        }
     })
 })
-
-
+}
 
 
 //Doctors List
 
- fetch('doctors.json').then(data => data.json().then(data => {
-    console.log(data);
+ fetch('doctors.json').then(data => data.json()).then(data => {
 
 const specialisation = document.getElementById('specialisation');
 const doclist =document.getElementById('doclist');
@@ -84,7 +85,7 @@ data.filter(ele =>{
     special_d.push(ele.specialisation);
 });
 
-const special  = new Set(special_d);
+const special  = new Set(special_d); //avoid displaying duplicate values
 
 special.forEach(e => {
     specialisation.innerHTML += `
@@ -104,10 +105,64 @@ specialisation.addEventListener("change",() =>{
             <td>${e.availability}</td>
             </tr>`
         }
-    }) 
+    })
+    if(specialisation.value == "All") {
+        data.filter(e =>{
+            
+                doclist.innerHTML += `
+                <tr>
+                <td>${e.doc_id}</td>
+                <td>${e.doc_name}</td>
+                <td>${e.specialisation}</td>
+                <td>${e.doc_fees}</td>
+                <td>${e.availability}</td>
+                </tr>`
+        
+        })
+    }
 })
 
- }))
+})
+
+//form validation
+
+const book = document.getElementById('book-btn');
+
+const inputs = document.getElementsByTagName("input");
+
+const selects = document.getElementsByTagName("select");
+
+const text = document.getElementsByTagName("textarea");
+
+book.addEventListener("click", (e) =>  {
+    e.preventDefault();
+    console.log('hello');
+   
+     const error = [];
+   for(let i =0 ; i < inputs.length; i++){
+    if(inputs[i].value == ""){
+        error.push("error");
+    }
+   }
+   for(let i = 0; i< selects.length; i++){
+    if(selects[i].value == ""){
+        error.push("error");
+    }
+   } 
+   if(text){
+    for(let i = 0; i< text.length; i++){
+        if(text[i].value == ""){
+            error.push("error");
+        }
+       } 
+   } 
+   if(error.length > 0){
+    alert("fill all fields");
+   }
+   else{
+    alert("success");
+   }
+})
 
 
     
