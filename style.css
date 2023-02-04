@@ -125,6 +125,7 @@ form button{
     align-items: center;
     flex-direction: column;
     row-gap: 10px;
+    border: 2px solid black;
 }
 
 .findhospital tr td{
